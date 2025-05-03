@@ -11,6 +11,9 @@ namespace Ecommerce.Infrastructure.Data.Config
             builder.Property(x => x.Name).IsRequired().HasMaxLength(30);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(300);
             builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+
+            builder.HasData(
+              new Product() { Id = 1, Name = "test", Description = "test" ,CategoryId=1,Price=22});
         }
     }
 }
