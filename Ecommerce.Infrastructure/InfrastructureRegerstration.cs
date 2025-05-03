@@ -9,7 +9,9 @@ namespace Ecommerce.Infrastructure
         public static IServiceCollection RegistrationConfiguration(this IServiceCollection services)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            // Apply Unit of Work
+
+            services.AddScoped<IUnitOfWork, UnitOfwork>();
             return services;
         }
     }
