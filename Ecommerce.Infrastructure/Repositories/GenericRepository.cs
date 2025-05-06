@@ -22,7 +22,7 @@ namespace Ecommerce.Infrastructure.Repositories
         public async Task DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
-            if (entity == null)
+            if (entity != null)
             {
                 _context.Set<T>().Remove(entity);
                 await _context.SaveChangesAsync();
