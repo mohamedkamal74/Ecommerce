@@ -3,16 +3,18 @@ using Ecommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Ecommerce.Infrastructure.data.Migrations
+namespace Ecommerce.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250507172315_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,14 +72,6 @@ namespace Ecommerce.Infrastructure.data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Photos");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ImageName = "test",
-                            ProductId = 3
-                        });
                 });
 
             modelBuilder.Entity("Ecommerce.core.Entities.Product.Product", b =>
@@ -123,22 +117,29 @@ namespace Ecommerce.Infrastructure.data.Migrations
 
             modelBuilder.Entity("Ecommerce.core.Entities.Product.Photo", b =>
                 {
-                    b.HasOne("Ecommerce.core.Entities.Product.Product", null)
+                    b.HasOne("Ecommerce.core.Entities.Product.Product", "Product")
                         .WithMany("Photos")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Ecommerce.core.Entities.Product.Product", b =>
                 {
                     b.HasOne("Ecommerce.core.Entities.Product.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Ecommerce.core.Entities.Product.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Ecommerce.core.Entities.Product.Product", b =>
