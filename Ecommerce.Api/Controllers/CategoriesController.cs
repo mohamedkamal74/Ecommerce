@@ -1,4 +1,6 @@
-﻿using Ecommerce.core.DTO;
+﻿using AutoMapper;
+using Ecommerce.Api.Helper;
+using Ecommerce.core.DTO;
 using Ecommerce.core.Entities.Product;
 using Ecommerce.core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +9,7 @@ namespace Ecommerce.Api.Controllers
 {
     public class CategoriesController : BaseController
     {
-        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public CategoriesController(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 
@@ -18,7 +20,7 @@ namespace Ecommerce.Api.Controllers
             {
                 var data = await _unitOfWork.CategoryRepository.GetAllAsync();
                 if (data is null)
-                    return BadRequest();
+                    return BadRequest(new ResponeApi(400));
                 return Ok(data);
             }
             catch (Exception ex)
@@ -36,7 +38,7 @@ namespace Ecommerce.Api.Controllers
             {
                 var category = await _unitOfWork.CategoryRepository.GetById(id);
                 if (category is null)
-                    return BadRequest();
+                    return BadRequest(new ResponeApi(400,$"No Category Found with id= {id}"));
                 return Ok(category);
             }
             catch (Exception ex)
@@ -50,13 +52,9 @@ namespace Ecommerce.Api.Controllers
         {
             try
             {
-                var category = new Category()
-                {
-                    Name = categoryDto.name,
-                    Description = categoryDto.description
-                };
+                var category = _mapper.Map<Category>(categoryDto);       
                 await _unitOfWork.CategoryRepository.AddAsync(category);
-                return Ok(new { Message = "Item has been Added" });
+                return Ok(new ResponeApi( 200,"Item has been Added" ));
 
             }
             catch (Exception ex)
@@ -71,13 +69,9 @@ namespace Ecommerce.Api.Controllers
         {
             try
             {
-                var category = await _unitOfWork.CategoryRepository.GetById(categoryDto.id);
-                if (category is null)
-                    return NotFound();
-                category.Name = categoryDto.name;
-                category.Description = categoryDto.description;
+                var category =_mapper.Map<Category>(categoryDto);
                 await _unitOfWork.CategoryRepository.UpdateAsync(category);
-                return Ok(new { Message = "Item has been Updated" });
+                return Ok(new ResponeApi(200, "Item has been Updated"));
 
             }
             catch (Exception ex)
@@ -95,7 +89,7 @@ namespace Ecommerce.Api.Controllers
                 if (category is null)
                     return NotFound();             
                 await _unitOfWork.CategoryRepository.DeleteAsync(category.Id);
-                return Ok(new { Message = "Item has been Deleted" });
+                return Ok(new ResponeApi(200, "Item has been Deleted"));
 
             }
             catch (Exception ex)
