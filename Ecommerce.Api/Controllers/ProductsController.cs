@@ -50,5 +50,19 @@ namespace Ecommerce.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(AddProductDto addProductDto)
+        {
+            try
+            {
+              await  _unitOfWork.ProductRepository.AddAsync(addProductDto);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 }

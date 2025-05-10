@@ -1,8 +1,10 @@
-﻿using Ecommerce.core.Entities.Product;
+﻿using Ecommerce.core.DTO;
+using Ecommerce.core.Entities.Product;
 
 namespace Ecommerce.core.Interfaces
 {
     public interface IProductRepository:IGenericRepository<Product>
     {
+        Task<bool> AddAsync(AddProductDto productDto);
     }
 }

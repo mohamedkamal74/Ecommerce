@@ -1,4 +1,5 @@
 ﻿using Ecommerce.core.Interfaces;
+using Ecommerce.core.Services;
 using Ecommerce.Infrastructure.Data;
 using Ecommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace Ecommerce.Infrastructure
         public static IServiceCollection RegistrationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddSingleton<IImageManagementService, ImageManagementService>();
             // Apply Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfwork>();
 
