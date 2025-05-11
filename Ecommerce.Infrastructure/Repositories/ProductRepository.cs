@@ -4,6 +4,7 @@ using Ecommerce.core.Entities.Product;
 using Ecommerce.core.Interfaces;
 using Ecommerce.core.Services;
 using Ecommerce.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Infrastructure.Repositories
 {
@@ -11,7 +12,7 @@ namespace Ecommerce.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IImageManagementService  _imageManagementService;
+        private readonly IImageManagementService _imageManagementService;
         public ProductRepository(AppDbContext context, IMapper mapper, IImageManagementService imageManagementService) : base(context)
         {
             _context = context;
@@ -22,15 +23,43 @@ namespace Ecommerce.Infrastructure.Repositories
         public async Task<bool> AddAsync(AddProductDto productDto)
         {
             if (productDto == null) return false;
-            var product=_mapper.Map<Product>(productDto);
+            var product = _mapper.Map<Product>(productDto);
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
-           var imagesPath= await _imageManagementService.AddImageasync(productDto.Photos, productDto.Name);
-            var photos = imagesPath.Select(x => new Photo
+            var imagesPath = await _imageManagementService.AddImageasync(productDto.Photos, productDto.Name);
+            var photos = imagesPath.Select(path => new Photo
             {
-              ImageName=x,
-              ProductId=product.Id
+                ImageName = path,
+                ProductId = product.Id
             }).ToList();
+            await _context.Photos.AddRangeAsync(photos);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateAsync(UpdateProductDto productDto)
+        {
+            if (productDto is null) return false;
+            var ExistingProduct = await _context.Products.Include(x => x.Category).Include(x => x.Photos)
+                            .FirstOrDefaultAsync(x => x.Id == productDto.Id);
+            if (ExistingProduct is null) return false;
+            _mapper.Map(productDto, ExistingProduct);
+
+            var ExistingPhoto = await _context.Photos.Where(x => x.ProductId == productDto.Id).ToListAsync();
+            foreach (var item in ExistingPhoto)
+            {
+                _imageManagementService.DeleteImageAsync(item.ImageName);
+            }
+
+            _context.Photos.RemoveRange(ExistingPhoto);
+            var imagePath = await _imageManagementService.AddImageasync(productDto.Photos, productDto.Name);
+
+            var photos = imagePath.Select(path => new Photo
+            {
+                ImageName = path,
+                ProductId = productDto.Id
+            }).ToList();
+
             await _context.Photos.AddRangeAsync(photos);
             await _context.SaveChangesAsync();
             return true;

@@ -52,16 +52,33 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(AddProductDto addProductDto)
+        public async Task<IActionResult> Create([FromForm] AddProductDto addProductDto)
         {
             try
             {
               await  _unitOfWork.ProductRepository.AddAsync(addProductDto);
+                return Ok(new ResponeApi(200));
             }
             catch (Exception ex)
             {
 
-                throw;
+                return BadRequest(new ResponeApi(400, ex.Message));
+            }
+        }
+
+        [HttpPut]
+
+        public async Task<IActionResult> Update([FromForm] UpdateProductDto updateProductDto)
+        {
+            try
+            {
+                await _unitOfWork.ProductRepository.UpdateAsync(updateProductDto);
+                return Ok(new ResponeApi(200));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new ResponeApi(400, ex.Message));
             }
         }
     }

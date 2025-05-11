@@ -5,6 +5,7 @@ using Ecommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 
 namespace Ecommerce.Infrastructure
 {
@@ -13,9 +14,11 @@ namespace Ecommerce.Infrastructure
         public static IServiceCollection RegistrationConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddSingleton<IImageManagementService, ImageManagementService>();
             // Apply Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfwork>();
+            services.AddSingleton<IImageManagementService, ImageManagementService>();
+            services.AddSingleton<IFileProvider>(
+                new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
 
             //Apply DbContext
             services.AddDbContext<AppDbContext>(options =>

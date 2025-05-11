@@ -27,4 +27,9 @@ namespace Ecommerce.core.DTO
         public int CategoryId { get; set; }
         public IFormFileCollection Photos { get; set; }
     }
+
+    public record UpdateProductDto:AddProductDto
+    {
+        public int Id { get; set; }
+    }
 }

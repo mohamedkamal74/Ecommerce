@@ -6,5 +6,6 @@ namespace Ecommerce.core.Interfaces
     public interface IProductRepository:IGenericRepository<Product>
     {
         Task<bool> AddAsync(AddProductDto productDto);
+        Task<bool> UpdateAsync(UpdateProductDto productDto);
     }
 }
