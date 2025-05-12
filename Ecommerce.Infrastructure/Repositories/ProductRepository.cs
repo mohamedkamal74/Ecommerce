@@ -64,5 +64,19 @@ namespace Ecommerce.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task DeleteAsync(Product product)
+        {
+            if (product is null) return;
+            if(product is not null && product.Photos is not null && product.Photos.Any())
+            {
+                foreach (var photo in product.Photos)
+                {
+                    _imageManagementService.DeleteImageAsync(photo.ImageName);
+                }
+            }
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
     }
 }

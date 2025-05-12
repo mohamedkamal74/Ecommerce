@@ -81,5 +81,23 @@ namespace Ecommerce.Api.Controllers
                 return BadRequest(new ResponeApi(400, ex.Message));
             }
         }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var product = await _unitOfWork.ProductRepository.GetById(id, x => x.Photos, x => x.Category);
+                if (product is null) return BadRequest(new ResponeApi(400));
+                await _unitOfWork.ProductRepository.DeleteAsync(product);
+                return Ok(new ResponeApi(200));
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(new ResponeApi(400, ex.Message));
+            }
+
+        }
     }
 }

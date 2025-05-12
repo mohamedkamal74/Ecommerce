@@ -22,7 +22,7 @@ namespace Ecommerce.Infrastructure.Repositories
                 if(file.Length > 0)
                 {
                     var imageName = file.FileName;
-                    var imageSrc = $"/Images{src}/{imageName}";
+                    var imageSrc = $"/Images/{src}/{imageName}";
                     var root = Path.Combine(imageDirectory, imageName);
                     using (FileStream stream=new FileStream(root, FileMode.Create))
                     {
