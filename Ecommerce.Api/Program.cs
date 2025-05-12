@@ -19,6 +19,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
