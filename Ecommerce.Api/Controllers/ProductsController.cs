@@ -2,6 +2,7 @@
 using Ecommerce.Api.Helper;
 using Ecommerce.core.DTO;
 using Ecommerce.core.Interfaces;
+using Ecommerce.core.Sharing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -15,13 +16,14 @@ namespace Ecommerce.Api.Controllers
         }
 
         [HttpGet("getAll")]
-        public async Task<IActionResult> Get(string? sort, int? categoryId)
+        public async Task<IActionResult> Get([FromQuery] ProductParam productParam)
         {
             try
             {
                 var data = await _unitOfWork.ProductRepository
-                                             .GetAllAsync(sort,categoryId);
-                return Ok(data);
+                                     .GetAllAsync(productParam);
+                var count = await _unitOfWork.ProductRepository.CountAsync();
+                return Ok( new Pagination<ProductDto>(productParam.pageNumber,productParam.pageSize,count,data));
             }
             catch (Exception ex)
             {
