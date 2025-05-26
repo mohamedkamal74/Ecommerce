@@ -4,6 +4,15 @@ using Ecommerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//add cors
+builder.Services.AddCors(op =>
+{
+    op.AddPolicy("CORSPolicy", builder =>
+    {
+        builder.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:4200");
+    });
+});
+
 // Add services to the container.
 builder.Services.RegistrationConfiguration(builder.Configuration);
 //Add Memory Cache
@@ -23,7 +32,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CORSPolicy");
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseStaticFiles();
 app.UseStatusCodePagesWithRedirects("/Errors/{0}");
 app.UseHttpsRedirection();
 
