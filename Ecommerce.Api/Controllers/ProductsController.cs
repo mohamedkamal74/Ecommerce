@@ -22,8 +22,7 @@ namespace Ecommerce.Api.Controllers
             {
                 var data = await _unitOfWork.ProductRepository
                                      .GetAllAsync(productParam);
-                var count = await _unitOfWork.ProductRepository.CountAsync();
-                return Ok( new Pagination<ProductDto>(productParam.pageNumber,productParam.pageSize,count,data));
+                return Ok( new Pagination<ProductDto>(productParam.pageNumber,productParam.pageSize,data.TotalCount,data.Products));
             }
             catch (Exception ex)
             {

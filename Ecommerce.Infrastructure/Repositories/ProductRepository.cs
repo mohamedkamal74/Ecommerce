@@ -21,7 +21,7 @@ namespace Ecommerce.Infrastructure.Repositories
             _imageManagementService = imageManagementService;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllAsync(ProductParam productParam)
+        public async Task<ReturnProductDto> GetAllAsync(ProductParam productParam)
         {
             var query = _context.Products.Include(p => p.Category).Include(p => p.Photos).AsNoTracking();
 
@@ -41,10 +41,15 @@ namespace Ecommerce.Infrastructure.Repositories
                 };
             }
 
+            ReturnProductDto returnProductDto = new()
+            {
+                TotalCount=query.Count()
+            };
+
             query = query.Skip((productParam.pageSize) * (productParam.pageNumber - 1)).Take(productParam.pageSize);
 
-            var result = _mapper.Map<List<ProductDto>>(query);
-            return result;
+            returnProductDto.Products = _mapper.Map<List<ProductDto>>(query);
+            return returnProductDto;
         }
         public async Task<bool> AddAsync(AddProductDto productDto)
         {
