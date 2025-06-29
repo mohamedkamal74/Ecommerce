@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using StackExchange.Redis;
 
 namespace Ecommerce.Infrastructure
 {
@@ -16,6 +17,14 @@ namespace Ecommerce.Infrastructure
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             // Apply Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfwork>();
+
+            // Apply Redis Connection
+            services.AddSingleton<IConnectionMultiplexer>(i =>
+            {
+                var config = ConfigurationOptions.Parse(configuration.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(config);
+            });
+
             services.AddSingleton<IImageManagementService, ImageManagementService>();
             services.AddSingleton<IFileProvider>(
                 new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot")));
