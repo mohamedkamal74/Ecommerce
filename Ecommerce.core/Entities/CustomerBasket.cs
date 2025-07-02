@@ -13,11 +13,11 @@ namespace Ecommerce.core.Entities
 
         }
 
-        public CustomerBasket(int id)
+        public CustomerBasket(string id)
         {
            Id= id;
         }
-        public int Id { get; set; }
+        public string Id { get; set; }
         public List<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
     }
 }

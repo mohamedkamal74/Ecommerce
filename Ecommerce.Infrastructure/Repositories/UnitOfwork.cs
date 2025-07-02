@@ -16,6 +16,8 @@ namespace Ecommerce.Infrastructure.Repositories
 
         public IPhotoRepository PhotoRepository { get; }
 
+        public ICustomerBasketRepository CustomerBasketRepository { get; }
+
         public UnitOfwork(AppDbContext context, IMapper mapper, IImageManagementService imageManagementService)
         {
             _context = context;
@@ -24,7 +26,9 @@ namespace Ecommerce.Infrastructure.Repositories
             CategoryRepository = new CategoryRepository(_context);
             ProductRepository = new ProductRepository(_context,_mapper, _imageManagementService);
             PhotoRepository = new PhotoRepository(_context);
-     
+            CustomerBasketRepository = new CustomerBasketRepository();
+
+
         }
     }
 }

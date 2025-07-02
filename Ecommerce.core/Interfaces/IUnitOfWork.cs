@@ -5,5 +5,6 @@
         public ICategoryRepository CategoryRepository { get;  }
         public IProductRepository ProductRepository { get;  }
         public IPhotoRepository PhotoRepository { get;  }
+        public ICustomerBasketRepository CustomerBasketRepository { get;  }
     }
 }
